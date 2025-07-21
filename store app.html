@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>apppremstore</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg-color: rgba(30, 30, 30, 0.6);
+            --text-primary: #FFFFFF;
+            --text-secondary: #AAAAAA;
+            --glow-accent-color: #00BFFF;
+            --glow-green: #39FF14;
+            --glow-purple: #BC13FE;
+            --blur-effect: saturate(180%) blur(10px);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --bottom-nav-bg: rgba(30, 30, 30, 0.7);
+            --font-scale: 1.0;
+        }
+
+        html {
+            font-size: calc(16px * var(--font-scale));
+        }
+
+        body.light-theme {
+            --bg-color: #F0F2F5;
+            --card-bg-color: #FFFFFF;
+            --text-primary: #1c1e21;
+            --text-secondary: #65676b;
+            --border-color: #e0e0e0;
+            --bottom-nav-bg: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding-bottom: 80px;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            transition: opacity 0.5s ease;
+        }
+
+        body.low-performance #particles-js {
+            display: none;
+        }
+
+        body.low-performance * {
+            transition: none !important;
+            animation: none !important;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-section {
+            display: none;
+            padding-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--glow-accent-color), 0 0 20px var(--glow-accent-color);
+            transition: text-shadow 0.3s;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--glow-accent-color);
+            text-shadow: 0 0 8px var(--glow-accent-color);
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 25px;
+            background-color: var(--card-bg-color);
+            border: 2px solid var(--glow-accent-color);
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.4);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 25px var(--glow-accent-color);
+            border-color: #fff;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .app-grid.list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .app-card {
+            background-color: var(--card-bg-color);
+            border-radius: 15px;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-grid.list-view .app-card {
+            flex-direction: row;
+            align-items: center;
+            padding: 15px;
+        }
+
+        body:not(.low-performance) .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border-color: var(--glow-accent-color);
+        }
+
+        body:not(.low-performance) .app-grid.list-view .app-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .app-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .app-grid.list-view .app-card-header {
+            margin-bottom: 0;
+        }
+
+        .app-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            margin-right: 15px;
+            object-fit: cover;
+            background-color: #333;
+            flex-shrink: 0;
+        }
+
+        .app-info {
+            min-width: 0;
+        }
+
+        .app-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+
+        .app-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .app-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            height: 4.5em;
+            overflow: hidden;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .app-grid.list-view .app-description {
+            display: none;
+        }
+
+        .download-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: box-shadow 0.3s ease;
+            text-decoration: none;
+        }
+
+        .app-grid.list-view .download-button {
+            width: auto;
+            min-width: 120px;
+            flex-shrink: 0;
+            margin-left: 15px;
+        }
+
+        .btn-buy {
+            background-color: var(--glow-purple);
+        }
+
+        .btn-download {
+            background-color: var(--glow-green);
+            color: #000;
+        }
+
+        body:not(.low-performance) .download-button:hover {
+            box-shadow: 0 0 15px var(--glow-green);
+        }
+
+        body:not(.low-performance) .btn-buy:hover {
+            box-shadow: 0 0 15px var(--glow-purple);
+        }
+
+        .download-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        body:not(.low-performance) .download-button:hover::before {
+            width: 250%;
+            height: 250%;
+        }
+
+        .settings-list,
+        .category-grid {
+            max-width: 600px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .setting-item,
+        .category-card {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            transition: border-color 0.3s ease;
+        }
+
+        .category-card {
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        body:not(.low-performance) .category-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--glow-accent-color);
+        }
+
+        .category-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--glow-accent-color);
+            transition: color 0.3s;
+        }
+
+        .category-card h3 {
+            font-size: 1.1rem;
+            text-transform: capitalize;
+            color: var(--text-primary);
+        }
+
+        .setting-item-label {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-primary);
+        }
+
+        .setting-item-label i {
+            width: 20px;
+            text-align: center;
+            color: var(--glow-accent-color);
+            transition: color 0.3s;
+        }
+
+        .styled-select {
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            outline: none;
+        }
+
+        body.light-theme .styled-select {
+            background: #e9e9e9;
+            color: var(--text-primary);
+        }
+
+        .styled-select option {
+            background: var(--bg-color);
+            color: var(--text-primary);
+        }
+
+        .bottom-nav {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .bottom-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 70px;
+                background-color: var(--bottom-nav-bg);
+                backdrop-filter: var(--blur-effect);
+                -webkit-backdrop-filter: var(--blur-effect);
+                border-top: 1px solid var(--border-color);
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                z-index: 1000;
+                transition: background-color 0.3s, border-top 0.3s;
+            }
+
+            body.light-theme .bottom-nav {
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                -webkit-backdrop-filter: none;
+                backdrop-filter: none;
+            }
+
+            .nav-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                color: var(--text-secondary);
+                text-decoration: none;
+                transition: all 0.2s ease;
+                cursor: pointer;
+                padding: 5px 10px;
+            }
+
+            .nav-item i {
+                font-size: 1.5rem;
+                margin-bottom: 4px;
+            }
+
+            .nav-item span {
+                font-size: 0.7rem;
+            }
+
+            .nav-item.active {
+                color: var(--glow-accent-color);
+                transform: translateY(-5px);
+                text-shadow: 0 0 8px var(--glow-accent-color);
+            }
+
+            body.light-theme .nav-item.active {
+                text-shadow: none;
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            z-index: 1001;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg-color);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            transform: scale(0.9);
+            animation: scaleUp 0.3s ease forwards;
+        }
+
+        @keyframes scaleUp {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+            transform: rotate(90deg);
+        }
+
+        .modal-product-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            object-fit: cover;
+            margin: 0 auto 20px auto;
+            border: 2px solid var(--border-color);
+        }
+
+        .modal-product-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .modal-product-description {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div class="container">
+        <section id="home-section" class="page-section active">
+            <header class="header">
+                <h1>apppremstore</h1>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Cari akun premium...">
+                </div>
+            </header>
+            <main class="app-grid" id="appGrid"></main>
+        </section>
+
+        <section id="categories-section" class="page-section">
+            <h2 class="section-title">Kategori Akun</h2>
+            <div id="categoryGrid" class="category-grid"></div>
+        </section>
+
+        <section id="settings-section" class="page-section">
+            <h2 class="section-title">Pengaturan</h2>
+            <div class="settings-list">
+                <div class="setting-item">
+                    <div class="setting-item-label"><i class="fas fa-palette"></i><span>Tema</span></div>
+                    <select id="themeSelector" class="styled-select">
+                        <option value="auto">🌓 Otomatis</option>
+                        <option value="dark">🌙 Gelap</option>
+                        <option value="light">☀️ Terang</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-item-label"><i class="fas fa-text-height"></i><span>Ukuran Teks</span></div>
+                    <select id="textSizeSelector" class="styled-select">
+                        <option value="0.9">Kecil</option>
+                        <option value="1.0">Normal</option>
+                        <option value="1.1">Besar</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-item-label"><i class="fas fa-paint-brush"></i><span>Warna Aksen</span></div>
+                    <select id="accentColorSelector" class="styled-select">
+                        <option value="#00BFFF">Biru Futuristik</option>
+                        <option value="#39FF14">Hijau Neon</option>
+                        <option value="#BC13FE">Ungu Galaksi</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-item-label"><i class="fas fa-rocket"></i><span>Mode Performa</span></div>
+                    <select id="performanceSelector" class="styled-select">
+                        <option value="normal">Normal</option>
+                        <option value="light">Ringan</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-item-label"><i class="fas fa-th-list"></i><span>Tampilan Aplikasi</span></div>
+                    <select id="layoutSelector" class="styled-select">
+                        <option value="grid">Grid</option>
+                        <option value="list">List</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-target="home-section"><i class="fas fa-home"></i><span>Beranda</span></div>
+        <div class="nav-item" data-target="categories-section"><i class="fas fa-th-large"></i><span>Kategori</span></div>
+        <div class="nav-item" data-target="settings-section"><i class="fas fa-cog"></i><span>Pengaturan</span></div>
+    </nav>
+
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content">
+            <span id="modalClose" class="modal-close">&times;</span>
+            <img id="modalImage" src="" alt="Product Image" class="modal-product-image">
+            <h2 id="modalTitle" class="modal-product-title"></h2>
+            <p id="modalDescription" class="modal-product-description"></p>
+            <a id="whatsappButton" href="#" target="_blank" class="download-button btn-buy" style="background-color: #25D366;">
+                <i class="fab fa-whatsapp"></i> Pesan via WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const appData = [{
+                id: 1,
+                title: 'Akun YouTube Premium',
+                category: 'streaming hiburan',
+                icon: 'https://i.ibb.co/3k0vVzB/yt.png',
+                price: '35000',
+                description: 'Nonton YouTube tanpa iklan, putar di latar belakang, dan akses YouTube Music. Akun sharing, proses cepat dan legal.'
+            }, {
+                id: 2,
+                title: 'Akun CapCut Pro',
+                category: 'editing video produktivitas',
+                icon: 'https://i.ibb.co/6rC6YpY/cc.png',
+                price: '55000',
+                description: 'Buka semua fitur pro CapCut, termasuk efek, filter, dan template eksklusif tanpa watermark. Cocok untuk content creator.'
+            }, {
+                id: 3,
+                title: 'Akun Netflix Premium',
+                category: 'streaming hiburan',
+                icon: 'https://i.ibb.co/B3pWqgD/nf.png',
+                price: '45000',
+                description: 'Langganan Netflix Premium (profil sharing) untuk menonton film dan serial TV kualitas 4K UHD. Garansi penuh selama pemakaian.'
+            }, {
+                id: 4,
+                title: 'Akun Vision+ Premium',
+                category: 'streaming hiburan',
+                icon: 'https://i.ibb.co/Yd4BvRf/vs.png',
+                price: '25000',
+                description: 'Akses semua channel premium, original series, dan tayangan olahraga di Vision+. Akun resmi dan aman.'
+            }, ];
+
+            const dom = {
+                body: document.body,
+                appGrid: document.getElementById('appGrid'),
+                bottomNavItems: document.querySelectorAll('.bottom-nav .nav-item'),
+                categoryGrid: document.getElementById('categoryGrid'),
+                searchInput: document.getElementById('searchInput'),
+                themeSelector: document.getElementById('themeSelector'),
+                textSizeSelector: document.getElementById('textSizeSelector'),
+                layoutSelector: document.getElementById('layoutSelector'),
+                accentColorSelector: document.getElementById('accentColorSelector'),
+                performanceSelector: document.getElementById('performanceSelector'),
+                productModal: document.getElementById('productModal'),
+                modalClose: document.getElementById('modalClose'),
+                modalImage: document.getElementById('modalImage'),
+                modalTitle: document.getElementById('modalTitle'),
+                modalDescription: document.getElementById('modalDescription'),
+                whatsappButton: document.getElementById('whatsappButton'),
+            };
+
+            let currentCategoryFilter = 'semua';
+            const allCategories = [...new Set(appData.flatMap(app => app.category.split(' ')))];
+            const WHATSAPP_NUMBER = '6282126446272';
+
+            const renderApps = (apps) => {
+                dom.appGrid.innerHTML = '';
+                if (apps.length === 0) {
+                    dom.appGrid.innerHTML = `<p style="text-align:center; color: var(--text-secondary); grid-column: 1 / -1;">Akun tidak ditemukan.</p>`;
+                    return;
+                }
+                apps.forEach(app => {
+                    const isFree = app.price === '0';
+                    const buttonText = isFree ? 'Gratis' : `Beli Rp ${parseInt(app.price).toLocaleString('id-ID')}`;
+                    const buttonClass = isFree ? 'btn-download' : 'btn-buy';
+
+                    const card = document.createElement('div');
+                    card.className = 'app-card';
+                    card.innerHTML = `
+                        <div class="app-card-header">
+                            <img src="${app.icon}" alt="${app.title} Icon" class="app-icon">
+                            <div class="app-info">
+                                <h3 class="app-title">${app.title}</h3>
+                                <span class="app-meta">Langganan Resmi</span>
+                            </div>
+                        </div>
+                        <p class="app-description">${app.description}</p>
+                        <button class="download-button ${buttonClass}" data-id="${app.id}">${buttonText}</button>`;
+                    dom.appGrid.appendChild(card);
+                });
+
+                dom.appGrid.querySelectorAll('.download-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const appId = parseInt(button.dataset.id);
+                        const app = appData.find(a => a.id === appId);
+                        if (app) {
+                            if (app.price === '0') {
+                                alert(`Produk gratis: ${app.title}`);
+                            } else {
+                                showProductModal(app);
+                            }
+                        }
+                    });
+                });
+            };
+
+            const renderCategoriesPage = () => {
+                dom.categoryGrid.innerHTML = '';
+                const categoryIcons = {
+                    'streaming': 'fas fa-play-circle',
+                    'hiburan': 'fas fa-film',
+                    'editing': 'fas fa-magic',
+                    'produktivitas': 'fas fa-tasks',
+                    'video': 'fas fa-video',
+                    'default': 'fas fa-shapes'
+                };
+                allCategories.forEach(cat => {
+                    const card = document.createElement('div');
+                    card.className = 'category-card';
+                    card.dataset.category = cat;
+                    const iconClass = categoryIcons[cat] || categoryIcons['default'];
+                    card.innerHTML = `<i class="${iconClass}"></i><h3 style="text-transform: capitalize;">${cat}</h3>`;
+                    dom.categoryGrid.appendChild(card);
+
+                    card.addEventListener('click', () => {
+                        currentCategoryFilter = card.dataset.category;
+                        dom.searchInput.value = '';
+                        applyFiltersAndSearch();
+                        switchPage('home-section');
+                        document.querySelector('.bottom-nav .nav-item.active')?.classList.remove('active');
+                        document.querySelector('.bottom-nav .nav-item[data-target="home-section"]')?.classList.add('active');
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    });
+                });
+            };
+
+            const showProductModal = (app) => {
+                dom.modalImage.src = app.icon;
+                dom.modalTitle.textContent = app.title;
+                dom.modalDescription.textContent = app.description;
+
+                const message = encodeURIComponent(`Halo, saya mau pesan produk ini: ${app.title}`);
+                dom.whatsappButton.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+
+                dom.productModal.style.display = 'flex';
+            };
+
+            const hideProductModal = () => {
+                dom.productModal.style.display = 'none';
+            };
+
+            const applyFiltersAndSearch = () => {
+                const searchTerm = dom.searchInput.value.toLowerCase();
+                let filteredApps = appData;
+                if (currentCategoryFilter !== 'semua') {
+                    filteredApps = filteredApps.filter(app => app.category.includes(currentCategoryFilter));
+                }
+                if (searchTerm) {
+                    filteredApps = filteredApps.filter(app => app.title.toLowerCase().includes(searchTerm));
+                }
+                renderApps(filteredApps);
+            };
+
+            const switchPage = (targetId) => {
+                document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
+                document.getElementById(targetId)?.classList.add('active');
+            };
+
+            const applySetting = (key, value) => {
+                localStorage.setItem(key, value);
+                const root = document.documentElement;
+
+                switch (key) {
+                    case 'theme':
+                        if (value === 'auto') {
+                            applyAutoTheme();
+                        } else {
+                            dom.body.classList.toggle('light-theme', value === 'light');
+                        }
+                        updateParticlesTheme();
+                        break;
+                    case 'textSize':
+                        root.style.setProperty('--font-scale', value);
+                        break;
+                    case 'performance':
+                        dom.body.classList.toggle('low-performance', value === 'light');
+                        if (value === 'light') {
+                            if (window.pJSDom && window.pJSDom[0]) {
+                                window.pJSDom[0].pJS.fn.vendors.destroypJS();
+                                window.pJSDom = [];
+                            }
+                        } else {
+                            initParticles();
+                        }
+                        break;
+                    case 'layout':
+                        dom.appGrid.className = 'app-grid ' + (value === 'list' ? 'list-view' : '');
+                        break;
+                    case 'accentColor':
+                        root.style.setProperty('--glow-accent-color', value);
+                        updateParticlesTheme();
+                        break;
+                }
+            };
+
+            const applyAutoTheme = () => {
+                const hour = new Date().getHours();
+                const isDayTime = hour >= 6 && hour < 18;
+                dom.body.classList.toggle('light-theme', isDayTime);
+            };
+
+            const loadSettings = () => {
+                const settings = {
+                    theme: localStorage.getItem('theme') || 'auto',
+                    textSize: localStorage.getItem('textSize') || '1.0',
+                    accentColor: localStorage.getItem('accentColor') || '#00BFFF',
+                    layout: localStorage.getItem('layout') || 'grid',
+                    performance: localStorage.getItem('performance') || 'normal',
+                };
+
+                dom.themeSelector.value = settings.theme;
+                dom.textSizeSelector.value = settings.textSize;
+                dom.accentColorSelector.value = settings.accentColor;
+                dom.layoutSelector.value = settings.layout;
+                dom.performanceSelector.value = settings.performance;
+
+                Object.keys(settings).forEach(key => applySetting(key, settings[key]));
+            };
+
+            const initParticles = () => {
+                if (localStorage.getItem('performance') === 'light' || (window.pJSDom && window.pJSDom.length > 0)) return;
+                particlesJS('particles-js', {
+                    "particles": {
+                        "number": {
+                            "value": 80,
+                            "density": {
+                                "enable": true,
+                                "value_area": 800
+                            }
+                        },
+                        "color": {
+                            "value": "#00BFFF"
+                        },
+                        "shape": {
+                            "type": "circle"
+                        },
+                        "opacity": {
+                            "value": 0.5,
+                            "random": true
+                        },
+                        "size": {
+                            "value": 3,
+                            "random": true
+                        },
+                        "line_linked": {
+                            "enable": true,
+                            "distance": 150,
+                            "color": "#00BFFF",
+                            "opacity": 0.4,
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 2,
+                            "direction": "none",
+                            "out_mode": "out"
+                        }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "repulse"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            }
+                        },
+                        "modes": {
+                            "repulse": {
+                                "distance": 70
+                            },
+                            "push": {
+                                "particles_nb": 4
+                            }
+                        }
+                    },
+                    "retina_detect": true
+                }, () => {
+                    updateParticlesTheme();
+                });
+            }
+
+            const updateParticlesTheme = () => {
+                if (!window.pJSDom || !window.pJSDom[0]) return;
+
+                const pJS = window.pJSDom[0].pJS;
+                let accentColor = localStorage.getItem('accentColor') || '#00BFFF';
+                const isLight = dom.body.classList.contains('light-theme');
+
+                pJS.particles.color.value = isLight ? '#888888' : accentColor;
+                pJS.particles.line_linked.color = isLight ? '#AAAAAA' : accentColor;
+                pJS.fn.particlesRefresh();
+            };
+
+            dom.bottomNavItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    dom.bottomNavItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    const targetId = item.dataset.target;
+                    if (targetId === 'home-section' && currentCategoryFilter !== 'semua') {
+                        currentCategoryFilter = 'semua';
+                        applyFiltersAndSearch();
+                    }
+                    switchPage(targetId);
+                });
+            });
+
+            dom.searchInput.addEventListener('keyup', applyFiltersAndSearch);
+
+            dom.themeSelector.addEventListener('change', (e) => applySetting('theme', e.target.value));
+            dom.textSizeSelector.addEventListener('change', (e) => applySetting('textSize', e.target.value));
+            dom.accentColorSelector.addEventListener('change', (e) => applySetting('accentColor', e.target.value));
+            dom.layoutSelector.addEventListener('change', (e) => applySetting('layout', e.target.value));
+            dom.performanceSelector.addEventListener('change', (e) => applySetting('performance', e.target.value));
+
+            dom.modalClose.addEventListener('click', hideProductModal);
+            dom.productModal.addEventListener('click', (event) => {
+                if (event.target === dom.productModal) {
+                    hideProductModal();
+                }
+            });
+
+            loadSettings();
+            renderCategoriesPage();
+            applyFiltersAndSearch();
+        });
+    </script>
+
+</body>
+</html>
